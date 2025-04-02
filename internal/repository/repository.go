@@ -13,6 +13,7 @@ type Repository interface {
 	RegisterUser(ctx context.Context, user *User) (string, error)
 	CheckUserExists(ctx context.Context, username string, email string) (bool, error)
 	GetUserByUsername(ctx context.Context, username string) (*User, error)
+	UpdateLoginTime(ctx context.Context, username string) error
 	ShuttingDownPostgres() error
 }
 
@@ -88,6 +89,14 @@ func (r *repository) GetUserByUsername(ctx context.Context, username string) (*U
 		return nil, errors.Wrap(err, "unable to get user by username")
 	}
 	return &user, nil
+}
+
+func (r *repository) UpdateLoginTime(ctx context.Context, username string) error {
+	_, err := r.pool.Exec(ctx, updateLastLoginTime, username)
+	if err != nil {
+		return errors.Wrap(err, "unable to update last login time")
+	}
+	return nil
 }
 
 func (r *repository) ShuttingDownPostgres() error {

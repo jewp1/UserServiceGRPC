@@ -88,6 +88,13 @@ func (s *authService) Login(ctx context.Context, req *gen.LoginRequest) (*gen.Lo
 		s.log.Errorf("invalid password for user: %s", user.Username)
 		return nil, status.Error(codes.Unauthenticated, "invalid username or password")
 	}
+
+	err = s.repo.UpdateLoginTime(ctx, req.GetUsername())
+	if err != nil {
+		s.log.Errorf("failed to update user login time: %v", err)
+		return nil, status.Error(codes.Internal, "failed to update user login time")
+	}
+
 	s.log.Infof("passwords match, a key will be generated for username: %s", user.Username)
 	return &gen.LoginResponse{Token: "token123"}, nil
 	// todo: реализация jwt токена
