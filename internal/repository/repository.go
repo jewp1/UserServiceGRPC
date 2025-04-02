@@ -82,6 +82,7 @@ func (r *repository) GetUserByUsername(ctx context.Context, username string) (*U
 		&user.HashPass,
 		&user.FirstName,
 		&user.LastName,
+		&user.Role,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)

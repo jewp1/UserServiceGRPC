@@ -8,6 +8,7 @@ type User struct {
 	HashPass    string
 	FirstName   string
 	LastName    string
+	Role        string
 	LastLoginAt time.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time

@@ -3,6 +3,7 @@ package service
 import (
 	"UsersService/internal/config"
 	"UsersService/internal/repository"
+	"UsersService/pkg/jwt"
 	"UsersService/protos/gen"
 	"context"
 	"go.uber.org/zap"
@@ -16,15 +17,17 @@ type authService struct {
 	cfg  config.Config
 	repo repository.Repository
 	log  *zap.SugaredLogger
+	jwt  jwt.JWTClient
 	gen.UnimplementedAuthServiceServer
 }
 
 func NewAuthService(
-	cfg config.Config, repo repository.Repository, log *zap.SugaredLogger) gen.AuthServiceServer {
+	cfg config.Config, repo repository.Repository, log *zap.SugaredLogger, jwt jwt.JWTClient) gen.AuthServiceServer {
 	return &authService{
 		cfg:  cfg,
 		repo: repo,
 		log:  log,
+		jwt:  jwt,
 	}
 }
 
@@ -96,6 +99,15 @@ func (s *authService) Login(ctx context.Context, req *gen.LoginRequest) (*gen.Lo
 	}
 
 	s.log.Infof("passwords match, a key will be generated for username: %s", user.Username)
-	return &gen.LoginResponse{Token: "token123"}, nil
-	// todo: реализация jwt токена
+
+	token, err := s.jwt.NewJWT(jwt.CreateTokenParams{
+		Username: user.Username,
+		Role:     user.Role,
+	})
+	if err != nil {
+		s.log.Errorf("failed to generate token: %v", err)
+		return nil, status.Error(codes.Internal, "failed to generate token")
+	}
+	s.log.Infof("token generated")
+	return &gen.LoginResponse{Token: token}, nil
 }

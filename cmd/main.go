@@ -5,6 +5,7 @@ import (
 	"UsersService/internal/logger"
 	"UsersService/internal/repository"
 	"UsersService/internal/service"
+	"UsersService/pkg/jwt"
 	"UsersService/protos/gen"
 	"context"
 	"github.com/joho/godotenv"
@@ -38,8 +39,11 @@ func main() {
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "error creating logger"))
 	}
+
+	jwt := jwt.NewJwtClient(cfg.Jwt.JwtSecret, cfg.Jwt.ExpireTime)
+
 	grpcServer := grpc.NewServer()
-	authService := service.NewAuthService(cfg, newRepository, logg)
+	authService := service.NewAuthService(cfg, newRepository, logg, jwt)
 	gen.RegisterAuthServiceServer(grpcServer, authService)
 
 	listen, err := net.Listen("tcp", cfg.Grpc.Port)

@@ -8,6 +8,7 @@ type Config struct {
 	LogLevel   string `envconfig:"logLevel" default:"info"`
 	PostgreSQL PostgreSQL
 	Grpc       GRPC
+	Jwt        JWT
 }
 
 type PostgreSQL struct {
@@ -25,4 +26,9 @@ type PostgreSQL struct {
 type GRPC struct {
 	Port    string        `envconfig:"GRPC_PORT" required:"true"`
 	Timeout time.Duration `envconfig:"GRPC_TIMEOUT" required:"true"`
+}
+
+type JWT struct {
+	ExpireTime time.Duration `envconfig:"JWT_EXPIRE_TIME" required:"true"`
+	JwtSecret  string        `envconfig:"JWT_SECRET" required:"true"`
 }
