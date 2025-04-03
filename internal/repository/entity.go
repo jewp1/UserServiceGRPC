@@ -3,8 +3,8 @@ package repository
 import "time"
 
 type User struct {
-	Email       string
-	Username    string
+	Email       string `validate:"required,email"`
+	Username    string `validate:"required, max=20"`
 	HashPass    string
 	FirstName   string
 	LastName    string

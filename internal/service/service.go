@@ -4,6 +4,7 @@ import (
 	"UsersService/internal/config"
 	"UsersService/internal/repository"
 	"UsersService/pkg/jwt"
+	"UsersService/pkg/validator"
 	"UsersService/protos/gen"
 	"context"
 	"go.uber.org/zap"
@@ -32,9 +33,9 @@ func NewAuthService(
 }
 
 func (s *authService) Register(ctx context.Context, req *gen.RegisterRequest) (*gen.RegisterResponse, error) {
-	if req.GetUsername() == "" || req.GetPassword() == "" || req.GetEmail() == "" {
-		s.log.Errorf("Username and password are required")
-		return nil, status.Error(codes.InvalidArgument, "username or password is empty")
+	if err := validator.ValidateStruct(ctx, req); err != nil {
+		s.log.Errorf("Validation error: %v", err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	exists, err := s.repo.CheckUserExists(ctx, req.GetUsername(), req.GetEmail())
@@ -76,10 +77,11 @@ func (s *authService) Register(ctx context.Context, req *gen.RegisterRequest) (*
 }
 
 func (s *authService) Login(ctx context.Context, req *gen.LoginRequest) (*gen.LoginResponse, error) {
-	if req.GetUsername() == "" || req.GetPassword() == "" {
-		s.log.Errorf("Username and password are required")
-		return nil, status.Error(codes.InvalidArgument, "username or password is empty")
+	if err := validator.ValidateStruct(ctx, req); err != nil {
+		s.log.Errorf("Validation error: %v", err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
+
 	user, err := s.repo.GetUserByUsername(ctx, req.GetUsername())
 	if err != nil {
 		s.log.Errorf("User not found: %s", err)
