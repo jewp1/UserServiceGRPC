@@ -40,7 +40,7 @@ func (c *jwtClient) NewJWT(user CreateTokenParams) (token string, err error) {
 
 func (c *jwtClient) ValidateJWT(token string) error {
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return c.secret, nil
+		return []byte(c.secret), nil
 	})
 	if err != nil {
 		return errors.Wrap(err, "Error parsing JWT")
@@ -48,10 +48,16 @@ func (c *jwtClient) ValidateJWT(token string) error {
 	if !parsedToken.Valid {
 		return errors.New("Invalid token")
 	}
-	expirationToken := parsedToken.Claims.(jwt.MapClaims)["exp"].(float64)
-	if int64(expirationToken) < time.Now().Unix() {
-		return errors.New("token expired")
+	claims, ok := parsedToken.Claims.(jwt.MapClaims)
+	if !ok {
+		return errors.New("Invalid claims in token")
 	}
-
+	expirationToken, ok := claims["exp"].(float64)
+	if !ok {
+		return errors.New("Invalid expiration time in token")
+	}
+	if int64(expirationToken) < time.Now().Unix() {
+		return errors.New("token is expired")
+	}
 	return nil
 }

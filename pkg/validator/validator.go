@@ -3,12 +3,12 @@ package validator
 import (
 	"context"
 	"errors"
-	"github.com/go-playground/validator"
-	"log"
 	"regexp"
+
+	"github.com/go-playground/validator"
 )
 
-var validate *validator.Validate
+var global *validator.Validate
 
 const (
 	ErrInvalidFormat      = "Invalid format"
@@ -17,29 +17,26 @@ const (
 	ErrFieldBelowMinLen   = "Field is below minimum length"
 	ErrFieldExceedsMaxVal = "Field exceeds maximum value"
 	ErrFieldBelowMinVal   = "Field is below minimum value"
-	ErrNotEmail           = "Field is not a valid email"
 	ErrUnknownValidation  = "Unknown validation error"
 )
 
 func init() {
-	SetValidator(NewValidator())
+	SetValidator(New())
 }
 
-func NewValidator() *validator.Validate {
+func New() *validator.Validate {
 	v := validator.New()
-	err := v.RegisterValidation("tag", validateTag)
-	if err != nil {
-		log.Fatal("unable to register validator: ", err)
-	}
+	_ = v.RegisterValidation("tag", validateTag)
+
 	return v
 }
 
-func Validator() *validator.Validate {
-	return validate
+func SetValidator(v *validator.Validate) {
+	global = v
 }
 
-func SetValidator(v *validator.Validate) {
-	validate = v
+func Validator() *validator.Validate {
+	return global
 }
 
 func validateTag(fl validator.FieldLevel) bool {
@@ -47,8 +44,8 @@ func validateTag(fl validator.FieldLevel) bool {
 	return re.MatchString(fl.Field().String())
 }
 
-func ValidateStruct(ctx context.Context, data interface{}) error {
-	return parseValidationErrors(Validator().StructCtx(ctx, data))
+func Validate(ctx context.Context, structure any) error {
+	return parseValidationErrors(Validator().StructCtx(ctx, structure))
 }
 
 func parseValidationErrors(err error) error {
@@ -56,30 +53,29 @@ func parseValidationErrors(err error) error {
 		return nil
 	}
 
-	vErr, ok := err.(validator.ValidationErrors)
-	if !ok || len(vErr) == 0 {
+	vErrors, ok := err.(validator.ValidationErrors)
+	if !ok || len(vErrors) == 0 {
 		return nil
 	}
 
-	validError := vErr[0]
-	var validErrDesc string
-	switch validError.Tag() {
+	validationError := vErrors[0]
+	var validationErrorDescription string
+	switch validationError.Tag() {
 	case "tag":
-		validErrDesc = ErrInvalidFormat
+		validationErrorDescription = ErrInvalidFormat
 	case "required":
-		validErrDesc = ErrFieldRequired
-	case "email":
-		validErrDesc = ErrNotEmail
+		validationErrorDescription = ErrFieldRequired
 	case "max":
-		validErrDesc = ErrFieldExceedsMaxLen
+		validationErrorDescription = ErrFieldExceedsMaxLen
 	case "min":
-		validErrDesc = ErrFieldBelowMinLen
+		validationErrorDescription = ErrFieldBelowMinLen
 	case "lt", "lte":
-		validErrDesc = ErrFieldExceedsMaxVal
+		validationErrorDescription = ErrFieldExceedsMaxVal
 	case "gt", "gte":
-		validErrDesc = ErrFieldBelowMinVal
+		validationErrorDescription = ErrFieldBelowMinVal
 	default:
-		validErrDesc = ErrUnknownValidation
+		validationErrorDescription = ErrUnknownValidation
 	}
-	return errors.New(validErrDesc + ": " + validError.Namespace())
+
+	return errors.New(validationErrorDescription + ": " + validationError.Namespace())
 }

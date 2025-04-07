@@ -33,7 +33,7 @@ func NewAuthService(
 }
 
 func (s *authService) Register(ctx context.Context, req *gen.RegisterRequest) (*gen.RegisterResponse, error) {
-	if err := validator.ValidateStruct(ctx, req); err != nil {
+	if err := validator.Validate(ctx, req); err != nil {
 		s.log.Errorf("Validation error: %v", err)
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -77,7 +77,7 @@ func (s *authService) Register(ctx context.Context, req *gen.RegisterRequest) (*
 }
 
 func (s *authService) Login(ctx context.Context, req *gen.LoginRequest) (*gen.LoginResponse, error) {
-	if err := validator.ValidateStruct(ctx, req); err != nil {
+	if err := validator.Validate(ctx, req); err != nil {
 		s.log.Errorf("Validation error: %v", err)
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
