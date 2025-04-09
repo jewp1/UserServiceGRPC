@@ -7,14 +7,16 @@ import (
 )
 
 func TestNewJWT(t *testing.T) {
-	client := NewJwtClient("test_secret", 1*time.Hour)
+	client := NewJwtClient("test_secret", 1*time.Hour, 1*time.Hour)
 
-	token, err := client.NewJWT(CreateTokenParams{
+	tokens, err := client.NewJWT(CreateTokenParams{
 		Username: "testuser",
 		Role:     "admin",
 	})
 	assert.NoError(t, err)
-	assert.NotEmpty(t, token)
+	assert.NotNil(t, tokens)
+	assert.NotEmpty(t, tokens.AccessToken)
+	assert.NotEmpty(t, tokens.RefreshToken)
 }
 
 func TestValidateJWT(t *testing.T) {
@@ -42,32 +44,33 @@ func TestValidateJWT(t *testing.T) {
 			name:       "Invalid token format",
 			accessTime: 1 * time.Hour,
 			modifyToken: func(token string) string {
-				return token + "invalid token"
+				return token + "corrupted"
 			},
 			expectErr:   true,
 			expectedErr: "Error parsing JWT",
 		},
 	}
 
-	for _, test := range testCases {
-		t.Run(test.name, func(t *testing.T) {
-			client := NewJwtClient("test_secret", test.accessTime)
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			client := NewJwtClient("test_secret", 1*time.Hour, tc.accessTime)
 
-			token, err := client.NewJWT(CreateTokenParams{
+			tokens, err := client.NewJWT(CreateTokenParams{
 				Username: "testuser",
 				Role:     "admin",
 			})
 			assert.NoError(t, err)
 
-			if test.modifyToken != nil {
-				token = test.modifyToken(token)
+			tokenToUse := tokens.AccessToken
+			if tc.modifyToken != nil {
+				tokenToUse = tc.modifyToken(tokenToUse)
 			}
 
-			err = client.ValidateJWT(token)
+			err = client.ValidateJWT(tokenToUse)
 
-			if test.expectErr {
+			if tc.expectErr {
 				assert.Error(t, err)
-				assert.Contains(t, err.Error(), test.expectedErr)
+				assert.Contains(t, err.Error(), tc.expectedErr)
 			} else {
 				assert.NoError(t, err)
 			}

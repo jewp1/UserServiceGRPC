@@ -196,6 +196,7 @@ func (x *LoginRequest) GetPassword() string {
 type LoginResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,2,opt,name=refreshToken,proto3" json:"refreshToken,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -237,6 +238,13 @@ func (x *LoginResponse) GetToken() string {
 	return ""
 }
 
+func (x *LoginResponse) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
+}
+
 var File_service_proto protoreflect.FileDescriptor
 
 const file_service_proto_rawDesc = "" +
@@ -253,9 +261,10 @@ const file_service_proto_rawDesc = "" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"F\n" +
 	"\fLoginRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"%\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"I\n" +
 	"\rLoginResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token2\x86\x01\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\x12\"\n" +
+	"\frefreshToken\x18\x02 \x01(\tR\frefreshToken2\x86\x01\n" +
 	"\vAuthService\x12?\n" +
 	"\bRegister\x12\x18.service.RegisterRequest\x1a\x19.service.RegisterResponse\x126\n" +
 	"\x05Login\x12\x15.service.LoginRequest\x1a\x16.service.LoginResponseB\aZ\x05./genb\x06proto3"

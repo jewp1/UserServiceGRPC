@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f8129dba-5557-4b7c-aa23-845012881b80" name="Changes" comment="fixed jwt and validator" />
+    <list default="true" id="f8129dba-5557-4b7c-aa23-845012881b80" name="Changes" comment="Added tests for business logic, created mocks for repository and jwt">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.env" beforeDir="false" afterPath="$PROJECT_DIR$/local.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/jwt/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/jwt/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/jwt/jwt_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/jwt/jwt_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protos/gen/service.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/protos/gen/service.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protos/gen/service_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/protos/gen/service_grpc.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protos/proto/service.proto" beforeDir="false" afterPath="$PROJECT_DIR$/protos/proto/service.proto" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,6 +50,7 @@
     "Go Test.TestLogin_TokenGenerationErr in UsersService/internal/service.executor": "Run",
     "Go Test.TestLogin_UserNotFound in UsersService/internal/service.executor": "Run",
     "Go Test.TestLogin_WrongPassword in UsersService/internal/service.executor": "Run",
+    "Go Test.TestNewJWT in UsersService/pkg/jwt.executor": "Run",
     "Go Test.TestValidateJWT/Expired_token in UsersService/pkg/jwt.executor": "Run",
     "Go Test.TestValidateJWT/Invalid_signature in UsersService/pkg/jwt.executor": "Run",
     "Go Test.TestValidateJWT/Invalid_token_format in UsersService/pkg/jwt.executor": "Run",
@@ -47,7 +61,7 @@
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "feature/users-grpc",
+    "git-widget-placeholder": "feature/tests",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "C:/Users/evsyu/GolandProjects/UsersService",
@@ -124,7 +138,7 @@
       <pattern value="^\QTestLogin_WrongPassword\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestValidateJWT/Invalid_signature in UsersService/pkg/jwt" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestNewJWT in UsersService/pkg/jwt" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="UsersService" />
       <working_directory value="$PROJECT_DIR$/pkg/jwt" />
       <root_directory value="$PROJECT_DIR$" />
@@ -133,16 +147,16 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestValidateJWT\E$/^\QInvalid_signature\E$" />
+      <pattern value="^\QTestNewJWT\E$" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestNewJWT in UsersService/pkg/jwt" />
         <item itemvalue="Go Test.TestLogin_TokenGenerationErr in UsersService/internal/service" />
         <item itemvalue="Go Test.TestLogin_WrongPassword in UsersService/internal/service" />
         <item itemvalue="Go Test.TestLogin_UserNotFound in UsersService/internal/service" />
         <item itemvalue="Go Test.TestLogin_Success in UsersService/internal/service" />
-        <item itemvalue="Go Test.TestValidateJWT/Invalid_signature in UsersService/pkg/jwt" />
       </list>
     </recent_temporary>
   </component>
@@ -187,7 +201,8 @@
     <MESSAGE value="added validator" />
     <MESSAGE value="added jwt" />
     <MESSAGE value="fixed jwt and validator" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed jwt and validator" />
+    <MESSAGE value="Added tests for business logic, created mocks for repository and jwt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added tests for business logic, created mocks for repository and jwt" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

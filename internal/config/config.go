@@ -29,6 +29,7 @@ type GRPC struct {
 }
 
 type JWT struct {
-	ExpireTime time.Duration `envconfig:"JWT_EXPIRE_TIME" required:"true"`
-	JwtSecret  string        `envconfig:"JWT_SECRET" required:"true"`
+	ExpireTime  time.Duration `envconfig:"JWT_EXPIRE_TIME" required:"true"`
+	RefreshTime time.Duration `envconfig:"JWT_REFRESH_TIME" required:"true"`
+	JwtSecret   string        `envconfig:"JWT_SECRET" required:"true"`
 }

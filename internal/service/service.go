@@ -102,7 +102,7 @@ func (s *authService) Login(ctx context.Context, req *gen.LoginRequest) (*gen.Lo
 
 	s.log.Infof("passwords match, a key will be generated for username: %s", user.Username)
 
-	token, err := s.jwt.NewJWT(jwt.CreateTokenParams{
+	tokens, err := s.jwt.NewJWT(jwt.CreateTokenParams{
 		Username: user.Username,
 		Role:     user.Role,
 	})
@@ -111,5 +111,5 @@ func (s *authService) Login(ctx context.Context, req *gen.LoginRequest) (*gen.Lo
 		return nil, status.Error(codes.Internal, "failed to generate token")
 	}
 	s.log.Infof("token generated")
-	return &gen.LoginResponse{Token: token}, nil
+	return &gen.LoginResponse{Token: tokens.AccessToken, RefreshToken: tokens.RefreshToken}, nil
 }

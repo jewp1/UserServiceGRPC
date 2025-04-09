@@ -40,7 +40,7 @@ func main() {
 		log.Fatal(errors.Wrap(err, "error creating logger"))
 	}
 
-	jwt := jwt.NewJwtClient(cfg.Jwt.JwtSecret, cfg.Jwt.ExpireTime)
+	jwt := jwt.NewJwtClient(cfg.Jwt.JwtSecret, cfg.Jwt.ExpireTime, cfg.Jwt.RefreshTime)
 
 	grpcServer := grpc.NewServer()
 	authService := service.NewAuthService(cfg, newRepository, logg, jwt)
